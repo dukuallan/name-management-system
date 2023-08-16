@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <h:form id="productView" enctype="multipart/form-data">
+            <div class="p-grid ">
+                <div class="p-col-12">
+                    <div class="card">
+                        <p:growl id="messages" showDetail="true" />
+                        <div class="p-d-flex p-jc-between" style="margin: 5px">
+                            <div>
+                                <p:commandButton icon="fa fa-search"
+                                                 styleClass="p-mr-2 p-mb-2 primary-button" id="searchBtn"
+                                                 actionListener="#{productView.reloadFilterReset()}"
+                                                 update="productView" value="Search">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-grid ">
+                <div class="p-col-12">
+                    <div class="card">
+                        <p:dataTable id="rolesTable" var="model"
+                                     value="#{productView.dataModels}" widgetVar="rolesTable"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                     paginator="true" lazy="true"
+                                     rows="#{productView.maximumresultsPerpage}"
+                                     emptyMessage="#{productView.dataEmptyMessage}"
+                                     paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                     rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name" />
+                                </f:facet>
+                                <h:outputText value="#{model.productName}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Price" />
+                                </f:facet>
+                                <h:outputText value="#{model.price}" />
+                            </p:column>
+
+                        </p:dataTable>
+                        <p:blockUI block="productView" trigger="searchBtn">
+                            <p:graphicImage value="/resources/images/workingicon.png" />
+                        </p:blockUI>
+                    </div>
+                </div>
+            </div>
+
+            <p:blockUI block="productView">
+                <p:graphicImage value="/resources/images/workingicon.png" />
+            </p:blockUI>
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

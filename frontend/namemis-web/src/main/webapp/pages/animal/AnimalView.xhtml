@@ -1,0 +1,117 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <h:form id="animalView" enctype="multipart/form-data">
+            <div class="p-grid ">
+                <div class="p-col-12">
+                    <div class="card">
+                        <p:growl id="messages" showDetail="true" />
+                        <div class="p-d-flex p-jc-between" style="margin: 5px">
+                            <div>
+                                <p:commandButton icon="fa fa-search"
+                                                 styleClass="p-mr-2 p-mb-2 primary-button" id="searchBtn"
+                                                 actionListener="#{animalView.reloadFilterReset()}"
+                                                 update="animalView" value="Search">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-grid ">
+                <div class="p-col-12">
+                    <div class="card">
+                        <p:dataTable id="animalsTable" var="model"
+                                     value="#{animalView.dataModels}" widgetVar="animalsTable"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                     paginator="true" lazy="true"
+                                     rows="#{animalView.maximumresultsPerpage}"
+                                     emptyMessage="#{animalView.dataEmptyMessage}"
+                                     paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                     rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-between">
+                                    <div>
+                                        <span class="table-header-text">Animals</span>
+
+                                    </div>
+
+                                    <div>
+                                        <div class="p-d-flex p-flex-wrap">
+                                            <div class="p-mr-2 p-mb-2">
+                                                <p:commandButton value="Add Animal" process="@this"
+                                                                 styleClass="ui-button-help" immediate="true"
+                                                                 actionListener="#{animalDialog.show}">
+                                                    <f:setPropertyActionListener value="#{null}"
+                                                                                 target="#{animalDialog.model}" />
+
+                                                    <p:ajax event="dialogReturn" listener="#{animalView.reloadFilterReset}" update="animalsTable" />
+                                                </p:commandButton>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name" />
+                                </f:facet>
+                                <h:outputText value="#{model.animalName}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Age" />
+                                </f:facet>
+                                <h:outputText value="#{model.animalAge}" />
+                            </p:column>
+
+                            <p:column headerText="Action" width="140" exportable="false"
+                                      style="text-align: center">
+                                <p:commandButton process="@this" icon="fa fa-edit"
+                                                 styleClass="ui-button-help" immediate="true" rendered="true"
+                                                 actionListener="#{animalDialog.show}">
+                                    <f:setPropertyActionListener value="#{model}"
+                                                                 target="#{animalDialog.model}" />
+                                    <p:ajax event="dialogReturn" update="animalsTable" />
+                                </p:commandButton>
+
+                                <p:commandButton icon="fa fa-trash" title="Delete"
+                                                 styleClass="ui-button-danger"
+                                                 style="margin-left: 5px"
+                                                 actionListener="#{animalView.deleteAnimal(model)}"
+                                                 update="animalView">
+                                    <p:confirm header="Confirmation"
+                                               message="You are about to delete an animal. Do you wish to continue?"
+                                               icon="ui-icon-alert" />
+                                    <p:ajax event="dialogReturn" listener="#{animalView.reloadFilterReset}" update="animalsTable" />
+                                </p:commandButton>
+
+                            </p:column>
+
+                        </p:dataTable>
+                        <p:blockUI block="animalView" trigger="searchBtn">
+                            <p:graphicImage value="/resources/images/workingicon.png" />
+                        </p:blockUI>
+                    </div>
+                </div>
+            </div>
+
+            <p:blockUI block="animalView">
+                <p:graphicImage value="/resources/images/workingicon.png" />
+            </p:blockUI>
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>
